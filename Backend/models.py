@@ -7,4 +7,3 @@ class Studntd(db.Model):
     fullname=db.Column(db.String,nullable=False)
     qualification=db.Column(db.String,nullable=False)
     date_of_birth=db.Column(db.Date,nullable=False)
-     
