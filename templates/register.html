@@ -1,0 +1,40 @@
+{%extends 'layout.html'%}
+{%block title%}
+Registration
+{%endblock%}
+{%block content%}
+<div>
+    <h1>Welcome to Quiz Master!!</h1>
+    <h3>Registration Page</h3>
+</div>
+<div class="f_container">
+    <form action="" method="POST">
+        <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        </div>
+        <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" required>
+        </div>
+        <div class="mb-3">
+            <label for="fullname" class="form-label">Full name</label>
+            <input type="text" class="form-control" id="fullname" required>
+        </div>
+        <div class="mb-3">
+            <label for="qualification" class="form-label">Qualification</label>
+            <input type="text" class="form-control" id="qualification" required>
+        </div>
+        <div class="mb-3">
+            <label for="dob" class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" id="dob" required>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="/login"><h5>Existing User?!</h5></a>
+        </div>
+    </form>
+</div>
+{%endblock%}
