@@ -4,12 +4,12 @@ html,body{
     overflow-x: hidden;
     
 }
-.container-fluid{
+.body_design{
     min-height:100vh;/* 100% of the viewport height */
     width:100vw;
     padding:0;
     margin:0;
-    background-color: lightblue;
+    background-color: lightpink;
     display: flex;
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
@@ -44,4 +44,14 @@ a{
 }
 h3{
     text-align:center;
+}
+.for_nav{
+    position:fixed;
+    top:0;
+    width:100vw;
+    padding-right:3em;
+    margin-bottom:50px;
+}
+.random{
+    margin-top:5em;
 }
