@@ -1,0 +1,26 @@
+{%extends 'layout.html'%}
+{%block title%}
+SubjectAdd
+{%endblock%}
+{%block content%}
+<div>
+    <h1>New Subjects</h1>
+    <h3>Add Your Favourite Subject Here!!</h3>
+</div>
+<div class="f_container">
+    <form action="/sub_add" method="POST">
+        <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="Name" required>
+        </div>
+        <div class="mb-3">
+        <label for="desc" class="form-label">Description</label>
+        <input type="text" class="form-control" id="desc" name="Description">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{url_for('sub_add')}}"><h5>Cancel?!</h5></a>
+        </div>
+    </form>
+</div>
+{%endblock%}

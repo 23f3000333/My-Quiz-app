@@ -55,3 +55,8 @@ h3{
 .random{
     margin-top:5em;
 }
+.table_arrang{
+    display:flex;
+    flex-direction: row;
+    gap:15em;
+}

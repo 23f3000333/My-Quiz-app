@@ -1,18 +1,18 @@
 {%extends 'layout.html'%}
 {%block title%}
-Admindashboard
+QuizPage
 {%endblock%}
 {%block navbar%}
 <nav class="navbar navbar-expand-lg bg-body-tertiary container-fluid for_nav">
     <div class="container-fluid ">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Quiz</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="{{url_for('admind')}}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('quize')}}">Quiz</a>
@@ -33,34 +33,33 @@ Admindashboard
   </nav>
 {%endblock%}
 {%block content%}
-<a href="{{url_for('sub_add')}}"class="btn btn-success">Add Subject <i class="fa-solid fa-plus"></i></a>
-<div class="table_arrang">
-  {%for subject in subjects%}
+  <a href="{{url_for('quizad')}}"class="btn btn-success">Add Quiz<i class="fa-solid fa-plus"></i></a>
+  <div class="table_arrang">
+    {%for quiz in quizes%}
 <table class="table table-bordered border-primary caption-top w-50">
-      <caption><h1>{{subject.name}}</h1></caption>
+      <caption><h1>Quiz1</h1></caption>
       <thead>
         <tr>
-          <th>Chapter Name</th>
-          <th>No.of Questions</th>
+          <th>ID</th>
+          <th>Quiz Title</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-  {%for chapter in chapters%}
+  {%for question in questions%}
         <tr>
-          <td>{{chapter.name}}</td>
-          <td>{{chapter.no_of_questions}}</td>
+          <td>{{question.id}}</td>
+          <td>{{question.question_statement}}</td>
           <td><a href="{{url_for('chap_add')}}" class="btn btn-outline-success">Edit<i class="fa-solid fa-plus"></i></a>
             <a href="#" class="btn btn-outline-success">Delete<i class="fa-solid fa-plus"></i></a>
           </td>
         </tr>
-  {%endfor%}
+  {%endfor%} 
       </tbody>
-      <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('chap_add')}}" class="btn btn-success">Add Chap <i class="fa-solid fa-plus"></i></a>
+      <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('questad')}}" class="btn btn-success">Add Chap <i class="fa-solid fa-plus"></i></a>
       </td></tr></tfoot>      
     </table>
   {%endfor%}
 </div>
-
-  
 {%endblock%}
+ 

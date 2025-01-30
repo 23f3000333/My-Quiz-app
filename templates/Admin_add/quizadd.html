@@ -1,0 +1,36 @@
+{%extends 'layout.html'%}
+{%block title%}
+QuizAdd
+{%endblock%}
+{%block content%}
+<div>
+    <h1>New Quiz</h1>
+    <h3>Add Your Favourite Quiz Here!!</h3>
+</div>
+<div class="f_container">
+    <form action="/quiz_add" method="POST">
+        <div class="mb-3">
+        <label for="chapid" class="form-label">Chap_id</label>
+        <input type="text" class="form-control" id="chapid" name="chapid">
+        </div>
+        <div class="mb-3">
+            <label for="d_of_quiz" class="form-label">Date of Quiz</label>
+            <input type="date" class="form-control" id="d_of_quiz" name="d_of_quiz">
+        </div>
+
+        <div class="mb-3">
+            <label for="t_dur" class="form-label">Time Duration</label>
+            <input type="time" class="form-control" id="t_dur" name="t_dur">
+        </div>
+        <div class="mb-3">
+            <label for="remarks" class="form-label">Remarks</label>
+            <input type="text" class="form-control" id="remarks" name="remarks">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{url_for('quizad')}}"><h5>Cancel?!</h5></a>
+        </div>
+
+    </form>
+</div>
+{%endblock%}
