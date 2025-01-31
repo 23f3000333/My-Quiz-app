@@ -16,14 +16,15 @@ html,body{
     flex-direction: column;
 }
 .i_container{
-    border:2px solid pink;
-    background-color:lightpink;
+    border:8px solid skyblue;
+    background-color:skyblue;
     width:80%;
     height:80vh;
     display: flex; 
     justify-content: center; /*Center content horizontally */
     align-items: center; /*Center content vertically */
     flex-direction: column;
+    border-radius: 8em;
 }
 
 h1{
@@ -59,4 +60,9 @@ h3{
     display:flex;
     flex-direction: row;
     gap:15em;
+}
+.u_container{
+    background-color:skyblue;    
+    margin-top:4rem;
+    border:2px skyblue;
 }

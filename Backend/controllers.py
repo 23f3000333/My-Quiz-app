@@ -49,7 +49,8 @@ def register_p():
 
 @app.route('/userdashboard')
 def userd():
-   return render_template('user.html')
+  quizess=Quiz.query.all()
+  return render_template('user.html',quizess=quizess)
 @app.route('/admindashboard')
 def admind():
   subjects=Subject.query.all()
@@ -123,3 +124,13 @@ def questadp():
     db.session.add(quesd)
     db.session.commit()
   return redirect(url_for('quize'))
+# @app.route('/summary')
+# def summary():
+#     summary_data = {
+#         'labels': ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+#         'values': [65, 59, 80, 81, 56, 55, 40]
+#     }
+#     return render_template('Admin_add/summary.html', summary_data=summary_data)
+@app.route('/stu_scores')
+def stu_scores():
+  return render_template('User_add/scores.html')

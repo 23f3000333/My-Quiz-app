@@ -5,7 +5,7 @@ Userdashboard
 {%block navbar%}
 <nav class="navbar navbar-expand-lg bg-body-tertiary container-fluid for_nav">
     <div class="container-fluid ">
-      <a class="navbar-brand" href="{{url_for('userd')}}">UserDashboard</a>
+      <a class="navbar-brand" href="{{url_for('userd')}}">Your Score</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -35,29 +35,22 @@ Userdashboard
 {%block content%}
 <div class="i_container u_container">
   <table class="table table-bordered table-hover caption-top  align-middle" style="width:65%;">
-    <caption class="text-center"><h1>Upcoming Quizes</h1></caption>
+    <caption class="text-center"><h1>Your Reality</h1></caption>
     <thead>
       <tr class=" table-active">
         <th>ID</th>
-        <th>No.of Question</th>
+        <th>No.of Question Attempted</th>
         <th>Date</th>
-        <th>Duration</th>
-        <th>Action</th>
+        <th>Score</th>
       </tr>
     </thead>
     <tbody>
-      {%for quiz in quizess%}
       <tr>
-        <td>{{quiz.id}}</td>
-        <td>Need to assign to the Quiz table</td>
-        <td>{{quiz.date_of_quiz}}</td>
-        <td>{{quiz.time_duration}}</td>
-        <td>
-          <a href="#" class="btn btn-outline-success">View</a>
-          <a href="#" class="btn btn-outline-success">Start</a>
-        </td>
+        <td>Ye Score Table se aayega I guess!!</td>
+        <td>Score table abhi bana nahi hai!</td>
+        <td>Date in which student have given the test</td>
+        <td>Need to brainstrome</td>
       </tr>
-      {%endfor%}
     </tbody>
   </table>
 </div>
