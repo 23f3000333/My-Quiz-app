@@ -35,9 +35,9 @@ QuizPage
 {%block content%}
   <a href="{{url_for('quizad')}}"class="btn btn-success">Add Quiz<i class="fa-solid fa-plus"></i></a>
   <div class="table_arrang">
-    {%for quiz in quizes%}
+{%for quiz in quizes%}
 <table class="table table-bordered border-primary caption-top w-50">
-      <caption><h1>Quiz1</h1></caption>
+      <caption><a href="{{url_for('quizshow')}}"><h1>QUIZ{{quiz.id}}</h1></a></caption>
       <thead>
         <tr>
           <th>ID</th>
@@ -46,7 +46,7 @@ QuizPage
         </tr>
       </thead>
       <tbody>
-  {%for question in questions%}
+  {%for question in quiz.questions%}
         <tr>
           <td>{{question.id}}</td>
           <td>{{question.question_statement}}</td>
@@ -56,7 +56,7 @@ QuizPage
         </tr>
   {%endfor%} 
       </tbody>
-      <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('questad')}}" class="btn btn-success">Add Chap <i class="fa-solid fa-plus"></i></a>
+      <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('questad')}}" class="btn btn-success">Add Question<i class="fa-solid fa-plus"></i></a>
       </td></tr></tfoot>      
     </table>
   {%endfor%}

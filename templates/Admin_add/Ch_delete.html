@@ -1,0 +1,18 @@
+{%extends 'layout.html'%}
+{%block title%}
+ChapterDelete
+{%endblock%}
+{%block content%}
+<div>
+    <h1>Delete Chapters</h1>
+    <h3>Are Your sure want to delete {{chapobj.name}}?!</h3>
+</div>
+<div class="f_container">
+    <form action="" method="POST">
+        <div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+            
+        </div>
+    </form>
+</div>
+{%endblock%}

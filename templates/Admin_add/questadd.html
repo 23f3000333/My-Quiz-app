@@ -14,19 +14,30 @@ Questadd
         <input type="number" class="form-control" id="q_id" name="q_id">
         </div>
         <div class="mb-3">
-            <label for="ques" class="form-label">Question</label>
+            <label for="ques" class="form-label">Question Statement</label>
             <input type="text" class="form-control" id="ques" name="ques">
         </div>
-
         <div class="mb-3">
-            <label for="answer">Choose the correct answer?</label>
-            <select name="answer" id="answer">
-                <option value="Hyper Text Markup Language">Hyper Text Markup Language</option>
-                <option value="Hyper Text Makeup Language">Hyper Text Makeup Language</option>
-                <option value="Hyper Tech Markup Language">Hyper Tech Markup Language</option>
-                <option value="Hiperr Text Markup Language">Hiperr Text Markup Language</option>
-            </select>
+            <label for="op1" class="form-label">Option1</label>
+            <input type="text" class="form-control" id="op1" name="op1">
         </div>
+        <div class="mb-3">
+            <label for="op2" class="form-label">Option2</label>
+            <input type="text" class="form-control" id="op2" name="op2">
+        </div>
+        <div class="mb-3">
+            <label for="op3" class="form-label">Option3</label>
+            <input type="text" class="form-control" id="op1" name="op3">
+        </div>
+        <div class="mb-3">
+            <label for="op4" class="form-label">Option4</label>
+            <input type="text" class="form-control" id="op4" name="op4">
+        </div>
+        <div class="mb-3">
+            <label for="corr_ans" class="form-label">CorrectAnswer</label>
+            <input type="text" class="form-control" id="corr_ans" name="corr_ans">
+        </div>
+
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="{{url_for('questad')}}"><h5>Cancel?!</h5></a>
         </div>
