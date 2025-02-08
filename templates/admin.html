@@ -50,7 +50,7 @@ Admindashboard
   {%for chapter in subject.chapters%}
               <tr>
                 <td>{{chapter.name}}</td>
-                <td>{{chapter.no_of_questions}}</td>
+                <td>{{chapter.quizes|length}}</td>
                 <td><a href="{{url_for('chap_edit',id=chapter.id)}}" class="btn btn-outline-success">Edit<i class="fa-solid fa-plus"></i></a>
                   <a href="{{url_for('chap_delete',id=chapter.id)}}" class="btn btn-outline-success">Delete<i class="fa-solid fa-plus"></i></a>
                 </td>

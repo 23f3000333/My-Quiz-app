@@ -1,0 +1,18 @@
+{%extends 'layout.html'%}
+{%block title%}
+QuestionDelete
+{%endblock%}
+{%block content%}
+<div>
+    <h1>Delete Question</h1>
+    <h3>Are Your sure want to delete {{questobj.question_statement}}?!</h3>
+</div>
+<div class="f_container">
+    <form action="" method="POST">
+        <div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+            
+        </div>
+    </form>
+</div>
+{%endblock%}

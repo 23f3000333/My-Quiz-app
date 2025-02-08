@@ -49,11 +49,11 @@ Userdashboard
       {%for quiz in quizess%}
       <tr>
         <td>{{quiz.id}}</td>
-        <td>Need to assign to the Quiz table</td>
-        <td>{{quiz.date_of_quiz}}</td>
+        <td>{{quiz.questions|length}}</td>
+        <td>{{today_date}}</td>
         <td>{{quiz.time_duration}}</td>
         <td>
-          <a href="{{url_for('stu_quiz_show')}}" class="btn btn-outline-success">View</a>
+          <a href="{{url_for('stu_quiz_show',id=quiz.id)}}" class="btn btn-outline-success">View</a>
           <a href="#" class="btn btn-outline-success">Start</a>
         </td>
       </tr>

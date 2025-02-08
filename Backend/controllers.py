@@ -48,7 +48,8 @@ def register_p():
 @app.route('/userdashboard')
 def userd():
   quizess=Quiz.query.all()
-  return render_template('user.html',quizess=quizess)
+  today_date=datetime.now().strftime('%Y-%m-%d')
+  return render_template('user.html',quizess=quizess,today_date=today_date)
 @app.route('/admindashboard')
 def admind():
   subjects=Subject.query.all()
@@ -130,7 +131,7 @@ def chap_delete_p(id):
   return redirect(url_for('admind'))
 
 
-# QUIZ CRUD OPERATION
+# ----------------------------------QUIZ AND QUESTION-----------------------------------------------
 @app.route('/quiz')
 def quize():
   chapters=Chapter.query.all()
@@ -155,7 +156,17 @@ def quizadp():
     db.session.commit()
   return redirect(url_for('quize'))
 
+# ____________________________________________________________QUIZ CRUD(SHOW)
+@app.route('/quiz_show/<int:id>/show')
+def quiz_show(id):
+  quizobj=Quiz.query.get(id)
+  chapter=Chapter.query.all()
+  subject=Subject.query.all()
+  if not quizobj:
+    return "Chapter doesn't exit"
+  return render_template('Admin_add/quizshow.html',quizobj=quizobj,chapter=chapter,subject=subject)
 
+# _____________________________________QUESTION
 @app.route('/quest_add')
 def questad():
   return render_template('Admin_add/questadd.html')
@@ -175,9 +186,60 @@ def questadp():
     db.session.add(quesd)
     db.session.commit()
   return redirect(url_for('quize'))
-@app.route('/quizshow')
-def quizshow():
-  return render_template('Admin_add/quizshow.html')
+# ______________________________________________________________QUESTION CRUD
+# -----------------QUESTION EDIT ------------------------------
+@app.route('/quest_edit/<int:id>/edit')
+def quest_edit(id):
+  questobj=Question.query.get(id)
+  if not questobj:
+    return "Chapter doesn't exit"#Flash message is required here
+  return render_template('Admin_add/Qu_edit.html',questobj=questobj)
+@app.route('/quest_edit/<int:id>/edit',methods=['POST'])
+def quest_edit_p(id):
+  if request.method =='POST':
+    questobj=Question.query.get(id)
+    if not questobj:
+      return "Chapter doesn't exit"#Flash message is required here
+    quiz_id=request.form.get('q_id')
+    question_statement=request.form.get('ques')
+    option1=request.form.get('op1')
+    option2=request.form.get('op2')
+    option3=request.form.get('op3')
+    option4=request.form.get('op4')
+    correct_answer=request.form.get('corr_ans')
+    if not quiz_id or not question_statement or not option1 or not option2 or not option3 or not option4 or not correct_answer:
+      return "Enter all fields" # here flash messsages will work 
+    questobj.quiz_id=quiz_id
+    questobj.question_statement=question_statement
+    questobj.option1=option1
+    questobj.option2=option2
+    questobj.option3=option3
+    questobj.option4=option4
+    questobj.correct_answer=correct_answer
+    db.session.commit()
+  return redirect(url_for('quize'))
+# -----------------QUESTION DELETE ------------------------------
+@app.route('/quest_delete/<int:id>/edit')
+def quest_delete(id):
+  questobj=Question.query.get(id)
+  if not questobj:
+    return "Chapter doesn't exit"
+  return render_template('Admin_add/Qu_delete.html',questobj=questobj)
+@app.route('/quest_delete/<int:id>/edit',methods=['POST'])
+def quest_delete_p(id):
+  if request.method =='POST':
+    questobj=Question.query.get(id)
+    if not questobj:
+      return "Chapter doesn't exit"
+    db.session.delete(questobj)
+    db.session.commit()
+  return redirect(url_for('quize'))
+
+
+
+
+
+# ------------------------SUMMARY---------------------------------------------
 # @app.route('/summary')
 # def summary():
 #     summary_data = {
@@ -185,9 +247,17 @@ def quizshow():
 #         'values': [65, 59, 80, 81, 56, 55, 40]
 #     }
 #     return render_template('Admin_add/summary.html', summary_data=summary_data)
+
+
+# ___________________________________________________________USERDASHBOARD
 @app.route('/stu_scores')
 def stu_scores():
   return render_template('User_add/scores.html')
-@app.route('/stu_quiz_show')
-def stu_quiz_show():
-  return render_template('User_add/viewscore.html')
+@app.route('/stu_quiz_show/<int:id>squizs')
+def stu_quiz_show(id):
+  quizobj=Quiz.query.get(id)
+  chapter=Chapter.query.filter_by(id=Quiz.ch_id)
+  subject=Subject.query.filter_by(id=Chapter.sub_id)
+  if not quizobj:
+    return "Chapter doesn't exit"
+  return render_template('User_add/squizv.html',quizobj=quizobj,chapter=chapter,subject=subject)

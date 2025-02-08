@@ -1,45 +1,44 @@
 {%extends 'layout.html'%}
 {%block title%}
-Questadd
+QuestEdit
 {%endblock%}
 {%block content%}
 <div>
-    <h1>New Question</h1>
-    <h3>Add Your Favourite Question Here!!</h3>
+    <h1>Question Edit</h1>
+    <h3>Edit Your Favourite Question Here!!</h3>
 </div>
 <div class="f_container">
-    <form action="/quest_add" method="POST">
+    <form action="" method="POST">
         <div class="mb-3">
         <label for="q_id" class="form-label">Q_ID</label>
-        <input type="number" class="form-control" id="q_id" name="q_id">
+        <input type="number" class="form-control" id="q_id" name="q_id" value="{{questobj.quiz_id}}">
         </div>
         <div class="mb-3">
             <label for="ques" class="form-label">Question Statement</label>
-            <input type="text" class="form-control" id="ques" name="ques">
+            <input type="text" class="form-control" id="ques" name="ques" value="{{questobj.question_statement}}">
         </div>
         <div class="mb-3">
             <label for="op1" class="form-label">Option1</label>
-            <input type="text" class="form-control" id="op1" name="op1">
+            <input type="text" class="form-control" id="op1" name="op1" value="{{questobj.option1}}">
         </div>
         <div class="mb-3">
             <label for="op2" class="form-label">Option2</label>
-            <input type="text" class="form-control" id="op2" name="op2">
+            <input type="text" class="form-control" id="op2" name="op2" value="{{questobj.option2}}">
         </div>
         <div class="mb-3">
             <label for="op3" class="form-label">Option3</label>
-            <input type="text" class="form-control" id="op1" name="op3">
+            <input type="text" class="form-control" id="op1" name="op3" value="{{questobj.option3}}">
         </div>
         <div class="mb-3">
             <label for="op4" class="form-label">Option4</label>
-            <input type="text" class="form-control" id="op4" name="op4">
+            <input type="text" class="form-control" id="op4" name="op4" value="{{questobj.option4}}">
         </div>
         <div class="mb-3">
             <label for="corr_ans" class="form-label">CorrectAnswer</label>
-            <input type="text" class="form-control" id="corr_ans" name="corr_ans">
+            <input type="text" class="form-control" id="corr_ans" name="corr_ans" value="{{questobj.correct_answer}}">
         </div>
 
             <button type="submit" class="btn btn-primary">Save</button>
-            <a href="{{url_for('questad')}}"><h5>Cancel?!</h5></a>
         </div>
     </form>
 </div>

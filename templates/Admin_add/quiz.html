@@ -35,9 +35,10 @@ QuizPage
 {%block content%}
   <a href="{{url_for('quizad')}}"class="btn btn-success">Add Quiz<i class="fa-solid fa-plus"></i></a>
   <div class="table_arrang">
-{%for quiz in quizes%}
+{%for chapter in chapters%}
+{%for quiz in chapter.quizes%}
 <table class="table table-bordered border-primary caption-top w-50">
-      <caption><a href="{{url_for('quizshow')}}"><h1>QUIZ{{quiz.id}}</h1></a></caption>
+      <caption><a href="{{url_for('quiz_show',id=quiz.id)}}"><h1>QUIZ{{quiz.id}}({{chapter.name}})</h1></a></caption>
       <thead>
         <tr>
           <th>ID</th>
@@ -50,16 +51,18 @@ QuizPage
         <tr>
           <td>{{question.id}}</td>
           <td>{{question.question_statement}}</td>
-          <td><a href="{{url_for('chap_add')}}" class="btn btn-outline-success">Edit<i class="fa-solid fa-plus"></i></a>
-            <a href="#" class="btn btn-outline-success">Delete<i class="fa-solid fa-plus"></i></a>
+          <td><a href="{{url_for('quest_edit',id=question.id)}}" class="btn btn-outline-success">Edit<i class="fa-solid fa-plus"></i></a>
+            <a href="{{url_for('quest_delete',id=question.id)}}" class="btn btn-outline-success">Delete<i class="fa-solid fa-plus"></i></a>
           </td>
         </tr>
   {%endfor%} 
+
       </tbody>
       <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('questad')}}" class="btn btn-success">Add Question<i class="fa-solid fa-plus"></i></a>
       </td></tr></tfoot>      
     </table>
-  {%endfor%}
+{%endfor%}
+{%endfor%} 
 </div>
 {%endblock%}
  
