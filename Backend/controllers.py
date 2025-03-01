@@ -58,9 +58,8 @@ def userd():
 @app.route('/admindashboard')
 def admind():
   subjects=Subject.query.all()
-  chapters = Chapter.query.filter_by(sub_id=Subject.id).all()
   user=Studentd.query.get(session['user_id'])
-  return render_template('admin.html', subjects=subjects,chapters=chapters,user=user)
+  return render_template('admin.html', subjects=subjects,user=user,Chapter=Chapter)
 # -------------------------------------------SUBJECT AND CHAPTER RELATED(CRUD OPERATION)--------------------------------------------
 # ------------------------------------------------------SUBJECT--------------------------------------------------------------
 @app.route('/sub_add')
@@ -275,29 +274,36 @@ def stu_quiz_show(id):
 
 # ______________________________________________________________QUIZ ATTEMPT AND SUBMISSION
 # Route to display the quiz
-@app.route('/user_quiz/<int:quiz_id>/',methods=['GET','POST'])
-def user_quiz(quiz_id,quest_no=0):
-  user=Studentd.query.get(session['user_id'])
-  quiz=Quiz.query.get(quiz_id)
-  # Fetch questions for the given quiz_id
-  questions = quiz.questions
-  # Ensure question index is within range
-  if quest_no >= len(questions):
-      return redirect(url_for('userd', quiz_id=quiz_id))
-  question = questions[quest_no]
-  score=0
-  if request.method =='POST':
-    selected_option = request.form.get(f'question_{question.id}')
-    if selected_option == question.correct_answer:
-        score= score+1
-    new_score=Score(user_id=user.id ,quiz_id=quiz_id, score=score)
-    db.session.add(new_score)
-    db.session.commit()
-    if quest_no + 1 < len(questions):
-      return redirect(url_for('user_quiz', quiz_id=quiz_id, quest_no=quest_no+1,question=questions[quest_no+1]))
-    else:
-      return redirect(url_for('userd', quiz_id=quiz_id,quest_no=quest_no))
-  return render_template('User_add/user_quiz.html',quiz=quiz, question=question,quest_no=quest_no+1, quiz_id=quiz_id,user=user,questions=questions)
+@app.route('/user_quiz/<int:quiz_id>/', methods=['GET', 'POST'])
+@app.route('/user_quiz/<int:quiz_id>/<int:quest_no>/', methods=['GET', 'POST'])
+def user_quiz(quiz_id, quest_no=0):
+    user = Studentd.query.get(session['user_id'])
+    quiz = Quiz.query.get(quiz_id)
+    questions = quiz.questions
+
+    # Ensure question index is within range
+    if quest_no >= len(questions):
+        return redirect(url_for('userd', quiz_id=quiz_id))
+
+    question = questions[quest_no]
+    score = 0
+
+    if request.method == 'POST':
+        selected_option = request.form.get(f'question_{question.id}')
+        if selected_option == question.correct_answer:
+            score = score + 1
+
+        new_score = Score(user_id=user.id, quiz_id=quiz_id, score=score)
+        db.session.add(new_score)
+        db.session.commit()
+
+        # Redirect to the next question
+        if quest_no + 1 < len(questions):
+            return redirect(url_for('user_quiz', quiz_id=quiz_id, quest_no=quest_no + 1))
+        else:
+            return redirect(url_for('userd', quiz_id=quiz_id))
+
+    return render_template('User_add/user_quiz.html', quiz=quiz, question=question, quest_no=quest_no, quiz_id=quiz_id, user=user, questions=questions)
   
 # ------------------------SUMMARY---------------------------------------------
 @app.route('/summary')
