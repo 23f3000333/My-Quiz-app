@@ -1,0 +1,24 @@
+{%extends 'layout.html'%}
+{%block title%}
+UserQuiz_Start
+{%endblock%}
+{%block content%}
+    <h1>{{quiz.id}}||Quiz of {{quiz.chapter.name}}</h1>
+    <form action="{{ url_for('user_quiz', quiz_id=quiz.id, quest_no=quest_no) }}" method="POST">
+        <div>
+            <p>{{ question.question_statement }}</p>
+            <input type="radio" name="question_{{ question.id }}" value="{{ question.option1 }}"> {{ question.option1 }}<br>
+            <input type="radio" name="question_{{ question.id }}" value=" {{ question.option2 }}"> {{ question.option2 }}<br>
+            <input type="radio" name="question_{{ question.id }}" value="{{ question.option3 }}"> {{ question.option3 }}<br>
+            <input type="radio" name="question_{{ question.id }}" value=" {{ question.option4 }}"> {{ question.option4 }}<br>
+            <p>{{question.correct_answer}}</p>
+        </div>
+         <!-- Navigation Buttons -->
+        <div class="button-group">
+            <button type="submit" class="btn">Save and Next</button>
+            {% if quest_no == (questions|length-1) %}
+                <button type="submit" class="btn">Submit</button>
+            {% endif %}
+        </div>
+    </form>
+{%endblock%}

@@ -1,13 +1,16 @@
-from flask import Flask,render_template,request,redirect,url_for
+from flask import Flask,render_template,request,redirect,url_for,session
+
 from flask import current_app as app
 from .models import *
 @app.route('/')
 def home():
+  if 'user' in session:
     return render_template('index.html')
+  else:
+    return redirect(url_for ('login'))
 @app.route('/login')
 def login():
   return render_template('login.html')
-
 @app.route('/login',methods=['POST'])
 def login_p():
   if request.method=="POST":
@@ -15,14 +18,15 @@ def login_p():
     upassword=request.form.get('Password')
     if not uemail or not upassword:
       return "Enter all fields "
-    user_details=Studentd.query.filter_by(uemail=uemail).first()
+    user_details=Studentd.query.filter_by(uemail=uemail,upassword=upassword).first()
     if not user_details:
       return "Do register first"
   # Password checking is not done yet
+    session['user_id'] = user_details.id# Storing username in session
     c_for_admin=(uemail=="admin@iitm.ac.in")
     if c_for_admin:
       return redirect(url_for('admind'))
-  return redirect(url_for('userd'))
+    return redirect(url_for('userd'))
 @app.route('/register')
 def register():
   return render_template('register.html')
@@ -49,12 +53,14 @@ def register_p():
 def userd():
   quizess=Quiz.query.all()
   today_date=datetime.now().strftime('%Y-%m-%d')
-  return render_template('user.html',quizess=quizess,today_date=today_date)
+  user=Studentd.query.get(session['user_id'])
+  return render_template('user.html',quizess=quizess,today_date=today_date,user=user)
 @app.route('/admindashboard')
 def admind():
   subjects=Subject.query.all()
   chapters = Chapter.query.filter_by(sub_id=Subject.id).all()
-  return render_template('admin.html', subjects=subjects,chapters=chapters)
+  user=Studentd.query.get(session['user_id'])
+  return render_template('admin.html', subjects=subjects,chapters=chapters,user=user)
 # -------------------------------------------SUBJECT AND CHAPTER RELATED(CRUD OPERATION)--------------------------------------------
 # ------------------------------------------------------SUBJECT--------------------------------------------------------------
 @app.route('/sub_add')
@@ -233,26 +239,31 @@ def quest_delete_p(id):
       return "Chapter doesn't exit"
     db.session.delete(questobj)
     db.session.commit()
-  return redirect(url_for('quize'))
-
-
-
-
-
-# ------------------------SUMMARY---------------------------------------------
-# @app.route('/summary')
-# def summary():
-#     summary_data = {
-#         'labels': ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-#         'values': [65, 59, 80, 81, 56, 55, 40]
-#     }
-#     return render_template('Admin_add/summary.html', summary_data=summary_data)
-
-
-# ___________________________________________________________USERDASHBOARD
+  return redirect(url_for('userd'))
+# ___________________________________________________________StudentScore
 @app.route('/stu_scores')
 def stu_scores():
-  return render_template('User_add/scores.html')
+  user=Studentd.query.get(session['user_id'])
+  score_show= []
+  query = request.args.get('query')  # Get score from search bar
+  search_type = request.args.get('search_type')  # Get search type (Score ID or Score Value)
+  for score in user.uscores:
+    quiz = Quiz.query.get(score.quiz_id)
+    if query:
+      try:
+        if (search_type == "qtime" and score.timestamp.date() == datetime.strptime(query, "%Y-%m-%d").date()) or (search_type == "score_value" and score.score == int(query)):
+          score_show.append((quiz,score))
+      except:
+        return "Invalid Input format!"
+    else:
+        score_show.append((quiz,score))# idhr elif not query lgayenge tih data jb nhi hogi toh wo sara data show nahi kregi instead wo kewal head part show kregi table ka lekin else me data nahi hota h phir vhi pura data show krta h ab ye clear hoga flash message lgane ke baad
+        
+  if query and not score_show:
+      return "No such data found", "warning" # Flash message will be here 
+  return render_template('User_add/scores.html',user=user,quiz=quiz,query=query,score_show=score_show,search_type=search_type)
+
+
+
 @app.route('/stu_quiz_show/<int:id>squizs')
 def stu_quiz_show(id):
   quizobj=Quiz.query.get(id)
@@ -261,3 +272,40 @@ def stu_quiz_show(id):
   if not quizobj:
     return "Chapter doesn't exit"
   return render_template('User_add/squizv.html',quizobj=quizobj,chapter=chapter,subject=subject)
+
+# ______________________________________________________________QUIZ ATTEMPT AND SUBMISSION
+# Route to display the quiz
+@app.route('/user_quiz/<int:quiz_id>/',methods=['GET','POST'])
+def user_quiz(quiz_id,quest_no=0):
+  user=Studentd.query.get(session['user_id'])
+  quiz=Quiz.query.get(quiz_id)
+  # Fetch questions for the given quiz_id
+  questions = quiz.questions
+  # Ensure question index is within range
+  if quest_no >= len(questions):
+      return redirect(url_for('userd', quiz_id=quiz_id))
+  question = questions[quest_no]
+  score=0
+  if request.method =='POST':
+    selected_option = request.form.get(f'question_{question.id}')
+    if selected_option == question.correct_answer:
+        score= score+1
+    new_score=Score(user_id=user.id ,quiz_id=quiz_id, score=score)
+    db.session.add(new_score)
+    db.session.commit()
+    if quest_no + 1 < len(questions):
+      return redirect(url_for('user_quiz', quiz_id=quiz_id, quest_no=quest_no+1,question=questions[quest_no+1]))
+    else:
+      return redirect(url_for('userd', quiz_id=quiz_id,quest_no=quest_no))
+  return render_template('User_add/user_quiz.html',quiz=quiz, question=question,quest_no=quest_no+1, quiz_id=quiz_id,user=user,questions=questions)
+  
+# ------------------------SUMMARY---------------------------------------------
+@app.route('/summary')
+def summary():
+    summary_data = {
+        'labels': ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        'values': [65, 59, 80, 81, 56, 55, 40]
+    }
+    return render_template('Admin_add/summary.html', summary_data=summary_data)  
+    
+   

@@ -5,7 +5,7 @@ Userdashboard
 {%block navbar%}
 <nav class="navbar navbar-expand-lg bg-body-tertiary container-fluid for_nav">
     <div class="container-fluid ">
-      <a class="navbar-brand" href="{{url_for('userd')}}">UserDashboard</a>
+      <a class="navbar-brand" href="{{url_for('userd')}}">Welcome {{user.fullname}}</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -24,8 +24,8 @@ Userdashboard
             <a class="nav-link" href="#">Logout</a>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form action="" class="d-flex" role="search" method="GET">
+          <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
       </div>
@@ -54,7 +54,7 @@ Userdashboard
         <td>{{quiz.time_duration}}</td>
         <td>
           <a href="{{url_for('stu_quiz_show',id=quiz.id)}}" class="btn btn-outline-success">View</a>
-          <a href="#" class="btn btn-outline-success">Start</a>
+          <a href="{{url_for('user_quiz',quiz_id=quiz.id)}}" class="btn btn-outline-success">Start</a>
         </td>
       </tr>
       {%endfor%}

@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,27 +11,25 @@
     <canvas id="summaryChart" width="400" height="200"></canvas>
 
     <script>
-        // Get the data passed from Flask
-        const summaryData = {
-            labels: {{ summary_data.labels|tojson|safe}},
-            values: {{ summary_data.values |tojson|safe }}
-        };
+        // Correctly passing Flask data to JavaScript
+        const summaryData = JSON.parse('{{ summary_data | tojson | safe }}');
 
         // Create the chart
         const ctx = document.getElementById('summaryChart').getContext('2d');
-        const summaryChart = new Chart(ctx, {
-            type: 'bar', // or 'line', 'pie', etc.
+        new Chart(ctx, {
+            type: 'bar', // Change to 'pie', 'line', etc., if needed
             data: {
                 labels: summaryData.labels,
                 datasets: [{
-                    label: 'Summary Data',
+                    label: 'Monthly Data',
                     data: summaryData.values,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
                 }]
             },
             options: {
+                responsive: true,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -41,4 +39,4 @@
         });
     </script>
 </body>
-</html> -->
+</html>

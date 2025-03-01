@@ -1,8 +1,10 @@
 from flask import Flask
 from Backend.models import *
 from datetime import date,time
+
 def setup_app():
     app = Flask(__name__)
+    app.secret_key = 'your_secret_key_here'
     app.config["SQLALCHEMY_DATABASE_URI"]='sqlite:///quiz_app.sqlite3'
     db.init_app(app)
     app.app_context().push()

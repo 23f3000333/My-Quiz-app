@@ -9,6 +9,8 @@ class Studentd(db.Model):
     qualification=db.Column(db.String,nullable=False)
     date_of_birth=db.Column(db.Date,nullable=False)
     is_admin=db.Column(db.Boolean,nullable=False,default=False)
+    uscores=db.relationship('Score',backref='studentd',lazy=True)
+
 class Subject(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String,unique=True,nullable=False)
@@ -30,6 +32,8 @@ class Quiz(db.Model):
     time_duration=db.Column(db.Time,nullable=False)
     remarks=db.Column(db.String,nullable=False)
     questions=db.relationship('Question',backref='quiz',lazy=True)
+    scores=db.relationship('Score',backref='quiz',lazy=True)
+
 
 class Question(db.Model):
     id=db.Column(db.Integer,primary_key=True)
@@ -40,5 +44,13 @@ class Question(db.Model):
     option3=db.Column(db.String,nullable=False)
     option4=db.Column(db.String,nullable=False)
     correct_answer=db.Column(db.String,nullable=False)
+class Score(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('studentd.id'))
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
+    # selected_option = db.Column(db.String,nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+
 
 
