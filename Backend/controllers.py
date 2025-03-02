@@ -51,15 +51,79 @@ def register_p():
 # -------------------------------------------------DASHBOARD FOR USER AND ADMIN----------------------------------------------------------------------
 @app.route('/userdashboard')
 def userd():
-  quizess=Quiz.query.all()
-  today_date=datetime.now().strftime('%Y-%m-%d')
-  user=Studentd.query.get(session['user_id'])
-  return render_template('user.html',quizess=quizess,today_date=today_date,user=user)
+    user = Studentd.query.get(session['user_id'])  # Get logged-in user
+    today_date = datetime.now().strftime('%Y-%m-%d')  # Get today's date
+
+    # Fetch all subjects and chapters
+    subjects = Subject.query.all()
+    chapters = Chapter.query.all()
+
+    # Get selected subject and chapter names from the request
+    selected_subject_name = request.args.get('subject_name')
+    selected_chapter_name = request.args.get('chapter_name')
+
+    # Fetch quizzes based on selected subject and chapter names
+    if selected_chapter_name:
+        # Find the chapter by name
+        chapter = Chapter.query.filter_by(name=selected_chapter_name).first()
+        if chapter:
+            quizzes = Quiz.query.filter_by(ch_id=chapter.id).all()
+        else:
+            quizzes = []
+    elif selected_subject_name:
+        # Find the subject by name
+        subject = Subject.query.filter_by(name=selected_subject_name).first()
+        if subject:
+            # Fetch all chapters for the selected subject
+            chapters_for_subject = Chapter.query.filter_by(sub_id=subject.id).all()
+            # Fetch quizzes for all chapters of the selected subject
+            quizzes = Quiz.query.filter(Quiz.ch_id.in_([chapter.id for chapter in chapters_for_subject])).all()
+        else:
+            quizzes = []
+    else:
+        # If no subject or chapter is selected, show all quizzes
+        quizzes = Quiz.query.all()
+
+    return render_template(
+        'user.html',user=user,subjects=subjects,chapters=chapters,quizzes=quizzes,today_date=today_date,selected_subject_name=selected_subject_name,selected_chapter_name=selected_chapter_name)
 @app.route('/admindashboard')
 def admind():
-  subjects=Subject.query.all()
-  user=Studentd.query.get(session['user_id'])
-  return render_template('admin.html', subjects=subjects,user=user,Chapter=Chapter)
+    user = Studentd.query.get(session['user_id'])  # Get logged-in user
+    subjects = Subject.query.all()  # Fetch all subjects
+    chapters = Chapter.query.all()  # Fetch all chapters
+    users = Studentd.query.all()  # Fetch all users
+
+    # Initialize lists for search results
+    subject_results = []
+    chapter_results = []
+    user_results = []
+
+    # Get search parameters from the request
+    search_type = request.args.get('search_type')  # Get search category
+    query = request.args.get('query')  # Get search input
+
+    # Perform search if a query is provided
+    if query:
+        try:
+            if search_type == "subject_name":
+                subject_results = Subject.query.filter(Subject.name.ilike(f"%{query}%")).all()  # Case-insensitive search
+            elif search_type == "chapter_name":
+                chapter_results = Chapter.query.filter(Chapter.name.ilike(f"%{query}%")).all()
+            elif search_type == "user_name":
+                user_results = Studentd.query.filter(Studentd.fullname.ilike(f"%{query}%")).all()  # Search users by name
+        except ValueError:
+            return "Invalid Input Format!", 400
+    else:
+        # If no query, show all subjects, chapters, and users
+        subject_results = subjects
+        chapter_results = chapters
+        user_results = users
+
+    # Flash message if no results are found
+    if query and not (subject_results or chapter_results or user_results):
+        flash("No such data found", "warning")  # Flash message for no results
+
+    return render_template('admin.html',user=user,subjects=subject_results,chapters=chapter_results,users=user_results,search_type=search_type,query=query)
 # -------------------------------------------SUBJECT AND CHAPTER RELATED(CRUD OPERATION)--------------------------------------------
 # ------------------------------------------------------SUBJECT--------------------------------------------------------------
 @app.route('/sub_add')
@@ -89,6 +153,7 @@ def chap_add_p():
     sub_id=request.form.get('s_id')
     if not name or not description or not no_of_questions or not sub_id:
       return "Enter all fields" # here flash messsages will work 
+    subject = Subject.query.get(sub_id)
     chapd=Chapter(name=name,description=description,no_of_questions=no_of_questions,sub_id=sub_id)
     db.session.add(chapd)
     db.session.commit()
@@ -137,12 +202,32 @@ def chap_delete_p(id):
 
 
 # ----------------------------------QUIZ AND QUESTION-----------------------------------------------
+
+
 @app.route('/quiz')
 def quize():
-  chapters=Chapter.query.all()
-  quizes=Quiz.query.filter_by(ch_id=Chapter.id)
-  questions=Question.query.all()
-  return render_template('Admin_add/quiz.html',quizes=quizes,questions=questions,chapters=chapters)
+    chapters = Chapter.query.all()
+    search_query = request.args.get('search_query', '').strip()  # Get the search query
+    search_type = request.args.get('search_type', 'quizid')  # Get the search type (quizid or chapter name)
+
+    # Initialize quizzes with all quizzes
+    quizes = Quiz.query.all()
+
+    # Filter quizzes only if a search query is provided
+    if search_query:
+        if search_type == 'quizid':
+            try:
+                quiz_id = int(search_query)
+                quizes = [quiz for quiz in quizes if quiz.id == quiz_id]
+            except ValueError:
+                quizes = []  # If the search query is not a valid integer, return no results
+        elif search_type == 'chapter_name':
+            quizes = [quiz for quiz in quizes if quiz.chapter and search_query.lower() in quiz.chapter.name.lower()]
+
+    questions = Question.query.all()
+    return render_template('Admin_add/quiz.html', quizes=quizes, questions=questions, chapters=chapters, search_query=search_query, search_type=search_type)
+
+# _________________________________________________________QUIZADD
 @app.route('/quiz_add')
 def quizad():
   return render_template('Admin_add/quizadd.html')
@@ -261,8 +346,6 @@ def stu_scores():
       return "No such data found", "warning" # Flash message will be here 
   return render_template('User_add/scores.html',user=user,quiz=quiz,query=query,score_show=score_show,search_type=search_type)
 
-
-
 @app.route('/stu_quiz_show/<int:id>squizs')
 def stu_quiz_show(id):
   quizobj=Quiz.query.get(id)
@@ -291,17 +374,15 @@ def user_quiz(quiz_id, quest_no=0):
     if request.method == 'POST':
         selected_option = request.form.get(f'question_{question.id}')
         if selected_option == question.correct_answer:
-            score = score + 1
-
-        new_score = Score(user_id=user.id, quiz_id=quiz_id, score=score)
-        db.session.add(new_score)
-        db.session.commit()
-
+            score = score + 1 # Abhi ke lliye use store krrhe h value directly in score kuch problem hua to ushko session me store krna h as deepseek bhi direct sessionme store kr rha thaa
         # Redirect to the next question
         if quest_no + 1 < len(questions):
-            return redirect(url_for('user_quiz', quiz_id=quiz_id, quest_no=quest_no + 1))
+          return redirect(url_for('user_quiz', quiz_id=quiz_id, quest_no=quest_no + 1))
         else:
-            return redirect(url_for('userd', quiz_id=quiz_id))
+          new_score = Score(user_id=user.id, quiz_id=quiz_id, score=score)
+          db.session.add(new_score)
+          db.session.commit()
+          return redirect(url_for('userd', quiz_id=quiz_id))
 
     return render_template('User_add/user_quiz.html', quiz=quiz, question=question, quest_no=quest_no, quiz_id=quiz_id, user=user, questions=questions)
   

@@ -1,65 +1,85 @@
-{%extends 'layout.html'%}
-{%block title%}
-Userdashboard
-{%endblock%}
-{%block navbar%}
+{% extends 'layout.html' %}
+{% block title %} Userdashboard {% endblock %}
+{% block navbar %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary container-fluid for_nav">
-    <div class="container-fluid ">
-      <a class="navbar-brand" href="{{url_for('userd')}}">Welcome {{user.fullname}}</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{url_for('userd')}}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{url_for('stu_scores')}}">Scores</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Summary</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Logout</a>
-          </li>
-        </ul>
-        <form action="" class="d-flex" role="search" method="GET">
-          <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('userd') }}">Welcome {{ user.fullname }}</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('userd') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('stu_scores') }}">Scores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Summary</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logout</a>
+                </li>
+            </ul>
+            <form action="{{ url_for('userd') }}" method="GET" class="d-flex" role="search">
+                      <select name="subject_name" id="subject_name" class="form-select me-2" style="width: auto;">
+                          <option value="">Select Subjects</option>
+                          {% for subject in subjects %}
+                              <option value="{{ subject.name }}" {% if selected_subject_name == subject.name %}selected{% endif %}>
+                                  {{ subject.name }}
+                              </option>
+                          {% endfor %}
+                      </select>
+                      <select name="chapter_name" id="chapter_name" class="form-select me-2"style="width: auto;">
+                          <option value="">Select Chapters</option>
+                          {% if selected_subject_name %}
+                              {% for chapter in chapters %}
+                                  {% if chapter.subject.name == selected_subject_name %}
+                                      <option value="{{ chapter.name }}" {% if selected_chapter_name == chapter.name %}selected{% endif %}>
+                                          {{ chapter.name }}
+                                      </option>
+                                  {% endif %}
+                              {% endfor %}
+                          {% endif %}
+                      </select>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
     </div>
-  </nav>
-{%endblock%}
-{%block content%}
+</nav>
+{% endblock %}
+{% block content %}
 <div class="i_container u_container">
-  <table class="table table-bordered table-hover caption-top  align-middle" style="width:65%;">
-    <caption class="text-center"><h1>Upcoming Quizes</h1></caption>
-    <thead>
-      <tr class=" table-active">
-        <th>ID</th>
-        <th>No.of Question</th>
-        <th>Date</th>
-        <th>Duration</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {%for quiz in quizess%}
-      <tr>
-        <td>{{quiz.id}}</td>
-        <td>{{quiz.questions|length}}</td>
-        <td>{{today_date}}</td>
-        <td>{{quiz.time_duration}}</td>
-        <td>
-          <a href="{{url_for('stu_quiz_show',id=quiz.id)}}" class="btn btn-outline-success">View</a>
-          <a href="{{url_for('user_quiz',quiz_id=quiz.id)}}" class="btn btn-outline-success">Start</a>
-        </td>
-      </tr>
-      {%endfor%}
-    </tbody>
-  </table>
-</div>
+    <!-- Subject and Chapter Dropdowns -->
+    
 
-{%endblock%}
+    <!-- Quizzes Table -->
+    <table class="table table-bordered table-hover caption-top align-middle" style="width:65%;">
+        <caption class="text-center"><h1>Upcoming Quizzes</h1></caption>
+        <thead>
+            <tr class="table-active">
+                <th>ID</th>
+                <th>No. of Questions</th>
+                <th>Date</th>
+                <th>Duration</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quizzes %}
+                <tr>
+                    <td>{{ quiz.id }}</td>
+                    <td>{{ quiz.questions|length }}</td>
+                    <td>{{ quiz.date_of_quiz }}</td>
+                    <td>{{ quiz.time_duration }}</td>
+                    <td>
+                        <a href="{{ url_for('stu_quiz_show', id=quiz.id) }}" class="btn btn-outline-success">View</a>
+                        <a href="{{ url_for('user_quiz', quiz_id=quiz.id) }}" class="btn btn-outline-success">Start</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

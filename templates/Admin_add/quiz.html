@@ -1,68 +1,82 @@
-{%extends 'layout.html'%}
-{%block title%}
-QuizPage
-{%endblock%}
-{%block navbar%}
+{% extends 'layout.html' %}
+{% block title %}QuizPage{% endblock %}
+{% block navbar %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary container-fluid for_nav">
-    <div class="container-fluid ">
-      <a class="navbar-brand" href="#">Quiz</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{{url_for('admind')}}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{url_for('quize')}}">Quiz</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Summary</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Logout</a>
-          </li>
-        </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Quiz</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('admind') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('quize') }}">Quiz</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Summary</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logout</a>
+                </li>
+            </ul>
+            <form method="GET" action="{{ url_for('quize') }}" class="d-flex">
+              <div class="input-group">
+                  <select class="form-select" name="search_type">
+                      <option value="quizid" {% if search_type == 'quizid' %}selected{% endif %}>Quiz ID</option>
+                      <option value="chapter_name" {% if search_type == 'chapter_name' %}selected{% endif %}>Chapter Name</option>
+                  </select>
+                  <input type="text" class="form-control" name="search_query" placeholder="Search" value="{{ search_query }}">
+                  <button type="submit" class="btn btn-primary">Search</button>
+              </div>
+          </form>
+        </div>
     </div>
-  </nav>
-{%endblock%}
-{%block content%}
-  <a href="{{url_for('quizad')}}"class="btn btn-success">Add Quiz<i class="fa-solid fa-plus"></i></a>
-  <div class="table_arrang">
-{%for chapter in chapters%}
-{%for quiz in chapter.quizes%}
-<table class="table table-bordered border-primary caption-top w-50">
-      <caption><a href="{{url_for('quiz_show',id=quiz.id)}}"><h1>QUIZ{{quiz.id}}({{chapter.name}})</h1></a></caption>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Quiz Title</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-  {%for question in quiz.questions%}
-        <tr>
-          <td>{{question.id}}</td>
-          <td>{{question.question_statement}}</td>
-          <td><a href="{{url_for('quest_edit',id=question.id)}}" class="btn btn-outline-success">Edit<i class="fa-solid fa-plus"></i></a>
-            <a href="{{url_for('quest_delete',id=question.id)}}" class="btn btn-outline-success">Delete<i class="fa-solid fa-plus"></i></a>
-          </td>
-        </tr>
-  {%endfor%} 
+</nav>
+{% endblock %}
+{% block content %}
+<a href="{{ url_for('quizad') }}" class="btn btn-success">Add Quiz <i class="fa-solid fa-plus"></i></a>
 
-      </tbody>
-      <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('questad')}}" class="btn btn-success">Add Question<i class="fa-solid fa-plus"></i></a>
-      </td></tr></tfoot>      
-    </table>
-{%endfor%}
-{%endfor%} 
-</div>
-{%endblock%}
- 
+<!-- Display Quizzes -->
+    {% if quizes %}
+        {% for quiz in quizes %}
+            <table class="table table-bordered border-primary caption-top w-50" style="table-layout: auto;">
+                <caption>
+                    <a href="{{ url_for('quiz_show', id=quiz.id) }}">
+                        <h1>QUIZ {{ quiz.id }} ({{ quiz.chapter.name }})</h1>
+                    </a>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Q_ID</th>
+                        <th>Question </th>
+                        <th class="w-auto">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in quiz.questions %}
+                        <tr>
+                            <td>{{ question.id }}</td>
+                            <td>{{ question.question_statement }}</td>
+                            <td class="w-auto"> 
+                                <a href="{{ url_for('quest_edit', id=question.id) }}" class="btn btn-outline-success d-inline-block">Edit <i class="fa-solid fa-plus"></i></a>
+                                <a href="{{ url_for('quest_delete', id=question.id) }}" class="btn btn-outline-danger d-inline-block">Delete <i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end">
+                            <a href="{{ url_for('questad') }}" class="btn btn-success">Add Question <i class="fa-solid fa-plus"></i></a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        {% endfor %}
+    {% else %}
+        <p>No quizzes found.</p>
+    {% endif %}
+{% endblock %}

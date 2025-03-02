@@ -33,8 +33,6 @@ class Quiz(db.Model):
     remarks=db.Column(db.String,nullable=False)
     questions=db.relationship('Question',backref='quiz',lazy=True)
     scores=db.relationship('Score',backref='quiz',lazy=True)
-
-
 class Question(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     quiz_id=db.Column(db.Integer,db.ForeignKey('quiz.id'))

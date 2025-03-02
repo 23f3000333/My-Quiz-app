@@ -25,7 +25,13 @@ Admindashboard
           </li>
         </ul>
         <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <select class="form-select me-2" name="search_type" id="search_type" required>
+            <option value="">-- Select --</option>
+            <option value="subject_name" {% if search_type == 'subject_name' %}selected{% endif %}>Subject Name</option>
+            <option value="chapter_name" {% if search_type == 'chapter_name' %}selected{% endif %}>Chapter Name</option>
+            <option value="user_name" {% if search_type == 'user_name' %}selected{% endif %}>User Name</option>
+         </select>
+          <input class="form-control me-2" name="query"type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
       </div>
@@ -34,33 +40,97 @@ Admindashboard
 {%endblock%}
 {%block content%}
 <a href="{{url_for('sub_add')}}"class="btn btn-success">Add Subject <i class="fa-solid fa-plus"></i></a>
-<div class="table_arrang">
-{%for subject in subjects%}
-<table class="table table-bordered border-primary table-hover caption-top w-50">
-      <caption><h1>{{subject.name}}</h1></caption>
-      <thead>
-        <tr>
-          <th>Chapter Name</th>
-          <th>No.of Questions</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-{% if subject.chapters %}
-  {%for chapter in subject.chapters%}
+<!-- Display Subjects and Chapters -->
+  {% if search_type == "subject_name" or not query %}
+      <!-- Display subjects and their chapters -->
+      {% for subject in subjects %}
+          <table class="table table-bordered border-primary table-hover caption-top w-50">
+              <caption><h1>{{ subject.name }}</h1></caption>
+              <thead>
+                  <tr>
+                      <th>CName</th>
+                      <th>No. of Q</th>
+                      <th>Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for chapter in subject.chapters %}
+                      <tr>
+                          <td>{{ chapter.name }}</td>
+                          <td>{{ chapter.quizes|length }}</td>
+                          <td>
+                              <a href="{{ url_for('chap_edit', id=chapter.id) }}" class="btn btn-outline-success">Edit <i class="fa-solid fa-plus"></i></a>
+                              <a href="{{ url_for('chap_delete', id=chapter.id) }}" class="btn btn-outline-success">Delete <i class="fa-solid fa-plus"></i></a>
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+              <tfoot>
+                  <tr>
+                      <td colspan="3" class="text-end">
+                          <a href="{{ url_for('chap_add') }}" class="btn btn-success">Add Chapter <i class="fa-solid fa-plus"></i></a>
+                      </td>
+                  </tr>
+              </tfoot>
+          </table>
+      {% endfor %}
+  {% elif search_type == "chapter_name" %}
+      <!-- Display filtered chapters -->
+      <table class="table table-bordered border-primary table-hover caption-top w-50">
+          <caption><h1>Filtered Chapters</h1></caption>
+          <thead>
               <tr>
-                <td>{{chapter.name}}</td>
-                <td>{{chapter.quizes|length}}</td>
-                <td><a href="{{url_for('chap_edit',id=chapter.id)}}" class="btn btn-outline-success">Edit<i class="fa-solid fa-plus"></i></a>
-                  <a href="{{url_for('chap_delete',id=chapter.id)}}" class="btn btn-outline-success">Delete<i class="fa-solid fa-plus"></i></a>
-                </td>
+                  <th>Chapter Name</th>
+                  <th>Subject</th>
+                  <th>No. of Q</th>
+                  <th>Action</th>
               </tr>
-  {%endfor%}
-{%endif%}
-      </tbody>
-      <tfoot><tr><td colspan="3" class="text-end"><a href="{{url_for('chap_add')}}" class="btn btn-success">Add Chap <i class="fa-solid fa-plus"></i></a>
-      </td></tr></tfoot>      
+          </thead>
+          <tbody>
+              {% for chapter in chapters %}
+                  <tr>
+                      <td>{{ chapter.name }}</td>
+                      <td>{{ chapter.subject.name }}</td>
+                      <td>{{ chapter.quizes|length }}</td>
+                      <td>
+                          <a href="{{ url_for('chap_edit', id=chapter.id) }}" class="btn btn-outline-success">Edit <i class="fa-solid fa-plus"></i></a>
+                          <a href="{{ url_for('chap_delete', id=chapter.id) }}" class="btn btn-outline-success">Delete <i class="fa-solid fa-plus"></i></a>
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  {% elif search_type == "user_name" %}
+    <!-- Display filtered users -->
+    <table class="table table-bordered border-primary table-hover caption-top w-50">
+        <caption><h1>Filtered Users</h1></caption>
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Qualification</th>
+                <!-- <th>Quiz Scores</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.fullname }}</td>
+                    <td>{{ user.uemail }}</td>
+                    <td>{{ user.qualification }}</td>
+                    <!-- <td>
+                        <ul>
+                            {% for score in user.uscores %}
+                                <li>
+                                    Quiz: {{ score.quiz.chapter.name }} (Subject: {{ score.quiz.chapter.subject.name }}),
+                                    Score: {{ score.score }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td> -->
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
-{%endfor%}
-</div>
+{% endif %}
 {%endblock%}
