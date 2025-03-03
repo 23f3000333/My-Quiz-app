@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,redirect,url_for,session
+from flask import Flask,render_template,request,redirect,url_for,session,flash
 
 from flask import current_app as app
 from .models import *
@@ -17,10 +17,12 @@ def login_p():
     uemail=request.form.get('Email')
     upassword=request.form.get('Password')
     if not uemail or not upassword:
-      return "Enter all fields "
+      flash("Enter all fields ")
+      return redirect(url_for("login"))  
     user_details=Studentd.query.filter_by(uemail=uemail,upassword=upassword).first()
     if not user_details:
-      return "Do register first"
+      flash( "Do register first")
+      return redirect(url_for("register")) 
   # Password checking is not done yet
     session['user_id'] = user_details.id# Storing username in session
     c_for_admin=(uemail=="admin@iitm.ac.in")
@@ -389,10 +391,108 @@ def user_quiz(quiz_id, quest_no=0):
 # ------------------------SUMMARY---------------------------------------------
 @app.route('/summary')
 def summary():
+    # Fetch all subjects
+    subjects = Subject.query.all()
+
+    # Fetch all scores
+    scores = Score.query.all()
+
+    # Prepare data for the charts
+    highest_score_labels = []
+    highest_score_values = []
+
+    user_attempts_labels = []
+    user_attempts_values = []
+
+    for subject in subjects:
+        # Fetch all chapters for the current subject
+        chapters = Chapter.query.filter_by(sub_id=subject.id).all()
+
+        # Fetch all quizzes for these chapters
+        quiz_ids = [quiz.id for chapter in chapters for quiz in chapter.quizes]
+
+        # Find scores for these quizzes
+        subject_scores = [score.score for score in scores if score.quiz_id in quiz_ids]
+
+        # If scores exist for the subject, find the highest score
+        if subject_scores:
+            highest_score = max(subject_scores)
+            highest_score_labels.append(subject.name)  # Subject name
+            highest_score_values.append(highest_score)  # Highest score
+
+        # Calculate the number of user attempts for the subject
+        user_attempts = len([score for score in scores if score.quiz_id in quiz_ids])
+        user_attempts_labels.append(subject.name)  # Subject name
+        user_attempts_values.append(user_attempts)  # Number of attempts
+
+    # Prepare data for the template
     summary_data = {
-        'labels': ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        'values': [65, 59, 80, 81, 56, 55, 40]
+        'highest_score': {
+            'labels': highest_score_labels,
+            'values': highest_score_values
+        },
+        'user_attempts': {
+            'labels': user_attempts_labels,
+            'values': user_attempts_values
+        }
     }
-    return render_template('Admin_add/summary.html', summary_data=summary_data)  
-    
-   
+
+    return render_template('Admin_add/summary.html', summary_data=summary_data)
+@app.route('/usum')
+def user_summary():
+    user = Studentd.query.get(session['user_id'])
+    # Fetch all subjects
+    subjects = Subject.query.all()
+
+    # Fetch all quizzes
+    quizzes = Quiz.query.all()
+
+    # Fetch all scores for the current user
+    user_scores = Score.query.filter_by(user_id=user.id).all()
+
+    # Prepare data for the charts
+    subject_quiz_counts = {}
+    month_quiz_counts = {}
+
+    # Calculate subject-wise number of quizzes
+    for subject in subjects:
+        # Fetch all chapters for the current subject
+        chapters = Chapter.query.filter_by(sub_id=subject.id).all()
+
+        # Fetch all quizzes for these chapters
+        quiz_ids = [quiz.id for chapter in chapters for quiz in chapter.quizes]
+
+        # Count the number of quizzes for the subject
+        subject_quiz_counts[subject.name] = len(quiz_ids)
+
+    # Calculate month-wise number of quizzes attempted by the user
+    for score in user_scores:
+        month = score.timestamp.month  # Extract month from the timestamp
+        month_name = datetime(2023, month, 1).strftime('%B')  # Convert month number to name
+        if month_name in month_quiz_counts:
+            month_quiz_counts[month_name] += 1
+        else:
+            month_quiz_counts[month_name] = 1
+
+    # Prepare data for the template
+    summary_data = {
+        'subject_quiz_counts': {
+            'labels': list(subject_quiz_counts.keys()),  # Subject names
+            'values': list(subject_quiz_counts.values())  # Number of quizzes
+        },
+        'month_quiz_counts': {
+            'labels': list(month_quiz_counts.keys()),  # Month names
+            'values': list(month_quiz_counts.values())  # Number of attempts
+        }
+    }
+
+    return render_template('User_add/usum.html', summary_data=summary_data)
+
+@app.route('/profile')
+def profile():
+  user=Studentd.query.get(session['user_id'])
+  return render_template('profile.html',user=user)
+@app.route('/logout')
+def logout():
+  session.pop('user_id')
+  return redirect(url_for('home'))

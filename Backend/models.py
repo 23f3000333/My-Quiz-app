@@ -9,14 +9,14 @@ class Studentd(db.Model):
     qualification=db.Column(db.String,nullable=False)
     date_of_birth=db.Column(db.Date,nullable=False)
     is_admin=db.Column(db.Boolean,nullable=False,default=False)
-    uscores=db.relationship('Score',backref='studentd',lazy=True)
+    uscores=db.relationship('Score',backref='studentd',lazy=True,cascade='all, delete-orphan')
 
 class Subject(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String,unique=True,nullable=False)
     description=db.Column(db.String,unique=True,nullable=False)
     # Relationship with Chapters
-    chapters=db.relationship('Chapter',backref='subject',lazy=True)
+    chapters=db.relationship('Chapter',backref='subject',lazy=True,cascade='all, delete-orphan')
 
 class Chapter(db.Model):
     id=db.Column(db.Integer,primary_key=True)
@@ -24,15 +24,15 @@ class Chapter(db.Model):
     name=db.Column(db.String,unique=True,nullable=False)
     no_of_questions=db.Column(db.Integer,nullable=False)
     description=db.Column(db.String,unique=True,nullable=False)
-    quizes=db.relationship('Quiz',backref='chapter',lazy=True)
+    quizes=db.relationship('Quiz',backref='chapter',lazy=True,cascade='all, delete-orphan')
 class Quiz(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     ch_id=db.Column(db.Integer,db.ForeignKey('chapter.id'))
     date_of_quiz=db.Column(db.Date,nullable=False)
     time_duration=db.Column(db.Time,nullable=False)
     remarks=db.Column(db.String,nullable=False)
-    questions=db.relationship('Question',backref='quiz',lazy=True)
-    scores=db.relationship('Score',backref='quiz',lazy=True)
+    questions=db.relationship('Question',backref='quiz',lazy=True,cascade='all, delete-orphan')
+    scores=db.relationship('Score',backref='quiz',lazy=True,cascade='all, delete-orphan')
 class Question(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     quiz_id=db.Column(db.Integer,db.ForeignKey('quiz.id'))

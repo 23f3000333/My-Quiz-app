@@ -17,6 +17,16 @@
 </head>
 <body class="container-fluid body_design">
     {%block navbar%}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-primary w-50 mx-auto text-center" role="alert">
+                    {{message}}
+                </div>
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
     {%endblock%}
         {%block content%}
 
