@@ -3,24 +3,21 @@
 Login
 {%endblock%}
 {%block content%}
-<div>
-    <h1>Welcome to Quiz Master!!</h1>
-    <h3>Login Page</h3>
-</div>
-<div class="f_container">
+<h1>Welcome to Quiz Master!!</h1>
+<h3>Login Page</h3>
+<div class="f_container bg-secondary bg-opacity-50">
     <form action="/login" method="POST">
         <div class="mb-3">
         <label for="Email" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="Email" aria-describedby="emailHelp" name="Email">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        <input type="email" class="form-control" id="Email" aria-describedby="emailHelp" name="Email" >
         </div>
         <div class="mb-3">
         <label for="Password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="Password" name="Password">
+        <input type="password" class="form-control" id="Password" name="Password" >
         </div>
         <div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a href="{{url_for('register')}}"><h5>Create a new user?!</h5></a>
+            <button type="submit" class="btn btn-success">Login</button>
+            <a href="{{url_for('register')}}"><h4>Create a new user?!</h4></a>
         </div>
     </form>
 </div>

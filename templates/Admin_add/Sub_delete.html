@@ -1,17 +1,16 @@
 {%extends 'layout.html'%}
 {%block title%}
-QuestionDelete
+ChapterDelete
 {%endblock%}
 {%block content%}
 <div>
-    <h1>Delete Question</h1>
-    <h3>Are Your sure want to delete Question : "{{questobj.question_statement}}"?</h3>
+    <h1>Delete Subject</h1>
+    <h3>Are Your sure want to delete {{subobj.name}}?!</h3>
 </div>
 <div class="f_container">
     <form action="" method="POST">
         <div>
             <button type="submit" class="btn btn-danger">Delete</button>
-            <a href="{{url_for('quize')}}"><h5>Cancel?!</h5></a>
             
         </div>
     </form>

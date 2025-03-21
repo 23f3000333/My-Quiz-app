@@ -1,5 +1,6 @@
 from flask import Flask
 from Backend.models import *
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date,time
 
 def setup_app():
@@ -18,6 +19,6 @@ with app.app_context():
     db.create_all()
     admin=Studentd.query.filter_by(is_admin=True).first()
     if not admin:
-        admin=Studentd(uemail="admin@iitm.ac.in",upassword=123456,fullname="admin",qualification="admin",date_of_birth=date(1995,7,14),is_admin=True)
+        admin=Studentd(uemail="admin@iitm.ac.in",upassword=generate_password_hash('123456'),fullname="Admin",qualification="admin",date_of_birth=date(1995,7,14),is_admin=True)
         db.session.add(admin)
         db.session.commit()

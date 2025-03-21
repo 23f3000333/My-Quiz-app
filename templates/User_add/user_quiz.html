@@ -1,23 +1,22 @@
-{% extends 'layout.html' %}
-{% block title %}
+{%extends 'layout.html' %}
+{%block title%}
 UserQuiz_Start
-{% endblock %}
-{% block content %}
+{%endblock%}
+{%block content%}
     <h1>{{ quiz.id }} || Quiz of {{ quiz.chapter.name }}</h1>
     <form action="{{ url_for('user_quiz', quiz_id=quiz.id, quest_no=quest_no) }}" method="POST">
-        <div>
-            <p>{{ question.question_statement }}</p>
+        <div class="f_container bg-secondary bg-opacity-50">
+            <p><h3>{{ question.id }}. {{ question.question_statement }}</h3></p>
             <input type="radio" name="question_{{ question.id }}" value="{{ question.option1 }}"> {{ question.option1 }}<br>
             <input type="radio" name="question_{{ question.id }}" value="{{ question.option2 }}"> {{ question.option2 }}<br>
             <input type="radio" name="question_{{ question.id }}" value="{{ question.option3 }}"> {{ question.option3 }}<br>
             <input type="radio" name="question_{{ question.id }}" value="{{ question.option4 }}"> {{ question.option4 }}<br>
         </div>
-        <!-- Navigation Buttons -->
         <div class="button-group">
-            <button type="submit" class="btn">Save and Next</button>
+            <button type="submit" class="btn btn-outline-primary">Save and Next</button>
             {% if quest_no == (questions|length - 1) %}
-                <button type="submit" class="btn">Submit</button>
+                <button type="submit" class="btn btn-outline-success">Submit</button>
             {% endif %}
         </div>
     </form>
-{% endblock %}
+{%endblock%}

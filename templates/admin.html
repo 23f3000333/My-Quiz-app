@@ -12,7 +12,7 @@ Admindashboard
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="{{ url_for('admind') }}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('quize')}}">Quiz</a>
@@ -40,16 +40,18 @@ Admindashboard
 {%endblock%}
 {%block content%}
 <a href="{{url_for('sub_add')}}"class="btn btn-success">Add Subject <i class="fa-solid fa-plus"></i></a>
-<!-- Display Subjects and Chapters -->
   {% if search_type == "subject_name" or not query %}
-      <!-- Display subjects and their chapters -->
       {% for subject in subjects %}
-          <table class="table table-bordered border-primary table-hover caption-top w-50">
-              <caption><h1>{{ subject.name }}</h1></caption>
+          <table class="table table-bordered  table-hover caption-top w-50">
+            <caption>
+                <h1>{{ subject.name }}</h1>
+                <a href="{{ url_for('sub_edit', id=subject.id) }}" class="btn btn-outline-primary">Edit <i class="fa-solid fa-plus"></i></a>
+                <a href="{{ url_for('sub_delete', id=subject.id) }}" class="btn btn-outline-danger">Delete <i class="fa-solid fa-trash"></i></a>
+            </caption>
               <thead>
-                  <tr>
+                  <tr class="table-info">
                       <th>CName</th>
-                      <th>No. of Q</th>
+                      <th>Available Quizes</th>
                       <th>Action</th>
                   </tr>
               </thead>
@@ -59,8 +61,8 @@ Admindashboard
                           <td>{{ chapter.name }}</td>
                           <td>{{ chapter.quizes|length }}</td>
                           <td>
-                              <a href="{{ url_for('chap_edit', id=chapter.id) }}" class="btn btn-outline-success">Edit <i class="fa-solid fa-plus"></i></a>
-                              <a href="{{ url_for('chap_delete', id=chapter.id) }}" class="btn btn-outline-success">Delete <i class="fa-solid fa-plus"></i></a>
+                              <a href="{{ url_for('chap_edit', id=chapter.id) }}" class="btn btn-outline-primary">Edit <i class="fa-solid fa-plus"></i></a>
+                              <a href="{{ url_for('chap_delete', id=chapter.id) }}" class="btn btn-outline-danger">Delete <i class="fa-solid fa-trash"></i></a>
                           </td>
                       </tr>
                   {% endfor %}
@@ -75,14 +77,13 @@ Admindashboard
           </table>
       {% endfor %}
   {% elif search_type == "chapter_name" %}
-      <!-- Display filtered chapters -->
-      <table class="table table-bordered border-primary table-hover caption-top w-50">
+      <table class="table table-bordered  table-hover caption-top w-50">
           <caption><h1>Filtered Chapters</h1></caption>
           <thead>
-              <tr>
+              <tr class="table-info">
                   <th>Chapter Name</th>
                   <th>Subject</th>
-                  <th>No. of Q</th>
+                  <th>Available Quizes</th>
                   <th>Action</th>
               </tr>
           </thead>
@@ -94,22 +95,24 @@ Admindashboard
                       <td>{{ chapter.quizes|length }}</td>
                       <td>
                           <a href="{{ url_for('chap_edit', id=chapter.id) }}" class="btn btn-outline-success">Edit <i class="fa-solid fa-plus"></i></a>
-                          <a href="{{ url_for('chap_delete', id=chapter.id) }}" class="btn btn-outline-success">Delete <i class="fa-solid fa-plus"></i></a>
+                          <a href="{{ url_for('chap_delete', id=chapter.id) }}" class="btn btn-outline-danger">Delete <i class="fa-solid fa-plus"></i></a>
                       </td>
                   </tr>
               {% endfor %}
           </tbody>
       </table>
   {% elif search_type == "user_name" %}
-    <!-- Display filtered users -->
-    <table class="table table-bordered border-primary table-hover caption-top w-50">
+    <table class="table table-bordered table-hover caption-top w-50">
         <caption><h1>Filtered Users</h1></caption>
         <thead>
-            <tr>
+            <tr class="table-info">
                 <th>User Name</th>
                 <th>Email</th>
                 <th>Qualification</th>
-                <!-- <th>Quiz Scores</th> -->
+                <th>Date of Birth</th>
+                <th> User Score</th>
+
+
             </tr>
         </thead>
         <tbody>
@@ -118,7 +121,8 @@ Admindashboard
                     <td>{{ user.fullname }}</td>
                     <td>{{ user.uemail }}</td>
                     <td>{{ user.qualification }}</td>
-                    <!-- <td>
+                    <td>{{ user.date_of_birth }}</td>
+                    <td>
                         <ul>
                             {% for score in user.uscores %}
                                 <li>
@@ -127,7 +131,7 @@ Admindashboard
                                 </li>
                             {% endfor %}
                         </ul>
-                    </td> -->
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

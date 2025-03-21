@@ -5,7 +5,8 @@ Userdashboard
 {%block navbar%}
 <nav class="navbar navbar-expand-lg bg-body-tertiary container-fluid for_nav">
     <div class="container-fluid ">
-      <a class="navbar-brand" href="{{url_for('userd')}}">Your Score</a>
+      <a class="navbar-brand" href="{{ url_for('userd') }}">Welcome {{ user.fullname }}</a>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -18,10 +19,10 @@ Userdashboard
             <a class="nav-link" href="{{url_for('stu_scores')}}">Scores</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Summary</a>
+            <a class="nav-link" href="{{url_for('user_summary')}}">Summary</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Logout</a>
+            <a class="nav-link" href="{{url_for('profile')}}">Logout</a>
           </li>
         </ul>
         <form action="" class="d-flex" role="search" method="GET">
@@ -35,17 +36,19 @@ Userdashboard
         </form>
       </div>
     </div>
-  </nav>
+</nav>
 {%endblock%}
 {%block content%}
 <div class="i_container u_container">
-  <table class="table table-bordered table-hover caption-top  align-middle" style="width:65%;">
+  <table class="table table-bordered table-hover caption-top  align-middle w-100">
     <caption class="text-center"><h1>Your Reality</h1></caption>
     <thead>
-      <tr class=" table-active">
+      <tr class=" table-info">
         <th>ID</th>
+        <th>QUIZ_ID</th>
+        <th>Quiz_Sub_Name</th>
+        <th>Quiz_Ch_Name</th>
         <th>No.of Question</th>
-        <th>Date</th>
         <th>Score</th>
       </tr>
     </thead>
@@ -53,13 +56,14 @@ Userdashboard
       {%for quiz,score in score_show%}
           <tr>
             <td>{{score.id}}</td>
+            <td>{{quiz.id}}</td>
+            <td>{{quiz.chapter.subject.name}}</td>
+            <td>{{quiz.chapter.name}}</td>
             <td>{{quiz.questions|length}}</td>
-            <td>{{score.timestamp}}</td>
             <td>{{score.score}}</td>
           </tr>
       {%endfor%}
     </tbody>
   </table>
 </div>
-
 {%endblock%}

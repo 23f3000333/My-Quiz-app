@@ -1,0 +1,26 @@
+{%extends 'layout.html'%}
+{%block title%}
+SubjectEdit
+{%endblock%}
+{%block content%}
+<div>
+    <h1>Edit Subjects</h1>
+    <h3>Edit {{subobj.name}} Here!!</h3>
+</div>
+<div class="f_container">
+    <form action="" method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="Name" value="{{subobj.name}}">
+        </div>
+        <div class="mb-3">
+            <label for="desc" class="form-label">Description</label>
+            <input type="text" class="form-control" id="desc" name="Description" value="{{subobj.description}}">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Update</button>
+            
+        </div>
+    </form>
+</div>
+{%endblock%}

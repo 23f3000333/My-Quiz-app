@@ -16,10 +16,10 @@
                     <a class="nav-link" href="{{ url_for('quize') }}">Quiz</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Summary</a>
+                    <a class="nav-link" href="{{url_for('summary')}}">Summary</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Logout</a>
+                    <a class="nav-link" href="{{url_for('profile')}}">Logout</a>
                 </li>
             </ul>
             <form method="GET" action="{{ url_for('quize') }}" class="d-flex">
@@ -39,18 +39,19 @@
 {% block content %}
 <a href="{{ url_for('quizad') }}" class="btn btn-success">Add Quiz <i class="fa-solid fa-plus"></i></a>
 
-<!-- Display Quizzes -->
-    {% if quizes %}
         {% for quiz in quizes %}
             <table class="table table-bordered border-primary caption-top w-50" style="table-layout: auto;">
                 <caption>
                     <a href="{{ url_for('quiz_show', id=quiz.id) }}">
                         <h1>QUIZ {{ quiz.id }} ({{ quiz.chapter.name }})</h1>
                     </a>
+                    <a href="{{ url_for('quiz_edit', id=quiz.id) }}" class="btn btn-outline-success d-inline-block">Edit <i class="fa-solid fa-plus"></i></a>
+                    <a href="{{ url_for('quiz_delete', id=quiz.id) }}" class="btn btn-outline-danger d-inline-block">Delete <i class="fa-solid fa-trash"></i></a>
+
                 </caption>
                 <thead>
                     <tr>
-                        <th>Q_ID</th>
+                        <th>Quiz_ID</th>
                         <th>Question </th>
                         <th class="w-auto">Action</th>
                     </tr>
@@ -58,7 +59,7 @@
                 <tbody>
                     {% for question in quiz.questions %}
                         <tr>
-                            <td>{{ question.id }}</td>
+                            <td>{{ quiz.id }}</td>
                             <td>{{ question.question_statement }}</td>
                             <td class="w-auto"> 
                                 <a href="{{ url_for('quest_edit', id=question.id) }}" class="btn btn-outline-success d-inline-block">Edit <i class="fa-solid fa-plus"></i></a>
@@ -76,7 +77,4 @@
                 </tfoot>
             </table>
         {% endfor %}
-    {% else %}
-        <p>No quizzes found.</p>
-    {% endif %}
 {% endblock %}

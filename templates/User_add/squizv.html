@@ -3,42 +3,24 @@
 QuizAdd
 {%endblock%}
 {%block content%}
-<div>
-    <h1>New Quiz</h1>
-    <h3>Add Your Favourite Quiz Here!!</h3>
-</div>
-<div class="i_container">
-    <form  method="POST">
-            <div class="mb-3">
-            <label for="quizid" class="form-label">Quiz_id</label>
-            <input type="text" class="form-control" id="quizid" name="quizid" value="{{quizobj.id}}">
-            </div>
-            <div class="mb-3">
-                <label for="subname" class="form-label">Subject Name</label>
-                <input type="text" class="form-control" id="subname" name="subname" value="{{quizobj.chapter.subject.name}}">
-            </div>
-            <div class="mb-3">
-                <label for="remarks" class="form-label">Chapter Name</label>
-                <input type="text" class="form-control" id="remarks" name="remarks" value="{{quizobj.chapter.name}}">
-            </div>
-            <div class="mb-3">
-                <label for="n_of_ques" class="form-label">No.of_Question</label>
-                <input type="number" class="form-control" id="n_of_ques" name="n_of_ques" value="{{quizobj.questions|length}}">
-            </div>
-            <div class="mb-3">
-                <label for="d_of_quiz" class="form-label">Scheduled Date</label>
-                <input type="date" class="form-control" id="d_of_quiz" name="d_of_quiz" value="{{quizobj.date_of_quiz}}">
-            </div>
-
-            <div class="mb-3">
-                <label for="t_dur" class="form-label">Duration(hh:mm)</label>
-                <input type="time" class="form-control" id="t_dur" name="t_dur" value="{{ quizobj.time_duration}}">
-            </div>
-            
-            <div>
-                <a href="{{url_for('userd')}}" class="btn btn-primary"><h5>Close</h5></a>
-            </div>
-    
-    </form>
-</div>
+    <h1>Quiz {{ quizobj.id }} Detail</h1>
+    <div class="f_container bg-secondary bg-opacity-50">
+        <ul class="list-group ">
+            <li class="list-group-item d-flex">
+                    <h3><b><u>Quiz ID</u></b> : {{quizobj.id}}</h3>
+            </li>
+            <li class="list-group-item d-flex ">
+                    <h3><b><u>Subject Name</u></b> : {{quizobj.chapter.subject.name}}</h3>
+            </li>
+            <li class="list-group-item d-flex">
+                <h3><b><u>Chapter Name</u></b> : {{quizobj.chapter.name}}</h3>
+            </li>
+            <li class="list-group-item d-flex">
+                <h3><b><u>No. of Question</u></b> : {{quizobj.questions|length}}</h3>
+            </li>
+            <li class="list-group-item d-flex">
+                <h3><b><u>Scheduled Date</u></b> : {{quizobj.date_of_quiz}}</h3>
+            </li>
+      </ul>
+    </div>
 {%endblock%}

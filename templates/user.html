@@ -44,25 +44,22 @@
                           {% endif %}
                       </select>
                     <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
+              </form>
         </div>
     </div>
 </nav>
 {% endblock %}
-{% block content %}
-<div class="i_container u_container">
-    <!-- Subject and Chapter Dropdowns -->
-    
 
-    <!-- Quizzes Table -->
-    <table class="table table-bordered table-hover caption-top align-middle" style="width:65%;">
+
+{% block content %}
+    <table class="table table-bordered table-hover caption-top align-middle w-50" >
         <caption class="text-center"><h1>Upcoming Quizzes</h1></caption>
         <thead>
-            <tr class="table-active">
+            <tr class="table-info">
                 <th>ID</th>
-                <th>No. of Questions</th>
-                <th>Date</th>
-                <th>Duration</th>
+                <th>No. of Questions </th>
+                <th>Chapter</th>
+                <th>Subject</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -71,15 +68,14 @@
                 <tr>
                     <td>{{ quiz.id }}</td>
                     <td>{{ quiz.questions|length }}</td>
-                    <td>{{ quiz.date_of_quiz }}</td>
-                    <td>{{ quiz.time_duration }}</td>
+                    <td>{{ quiz.chapter.name }}</td>
+                    <td>{{ quiz.chapter.subject.name }}</td>
                     <td>
-                        <a href="{{ url_for('stu_quiz_show', id=quiz.id) }}" class="btn btn-outline-success">View</a>
+                        <a href="{{ url_for('stu_quiz_show', id=quiz.id) }}" class="btn btn-outline-primary">View</a>
                         <a href="{{ url_for('user_quiz', quiz_id=quiz.id) }}" class="btn btn-outline-success">Start</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-</div>
 {% endblock %}
