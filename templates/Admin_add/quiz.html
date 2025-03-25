@@ -51,7 +51,7 @@
                 </caption>
                 <thead>
                     <tr>
-                        <th>Quiz_ID</th>
+                        <th>Question_ID</th>
                         <th>Question </th>
                         <th class="w-auto">Action</th>
                     </tr>
@@ -59,7 +59,7 @@
                 <tbody>
                     {% for question in quiz.questions %}
                         <tr>
-                            <td>{{ quiz.id }}</td>
+                            <td>{{ question.id }}</td>
                             <td>{{ question.question_statement }}</td>
                             <td class="w-auto"> 
                                 <a href="{{ url_for('quest_edit', id=question.id) }}" class="btn btn-outline-success d-inline-block">Edit <i class="fa-solid fa-plus"></i></a>

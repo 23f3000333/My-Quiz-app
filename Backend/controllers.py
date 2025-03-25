@@ -140,6 +140,7 @@ def sub_add_p():
     description=request.form.get('Description')
     if not name or not description:
       flash("Enter all fields") 
+      return render_template('Admin_add/subj.html')
     subjectd=Subject(name=name,description=description)
     db.session.add(subjectd)
     db.session.commit()
@@ -163,6 +164,8 @@ def sub_edit_p(id):
     description=request.form.get('Description')
     if not name or not description :
       flash("Enter all fields")
+      return render_template('Admin_add/Sub_edit.html',subobj=subobj)
+      
     subobj.name=name
     subobj.description=description
     db.session.commit()
@@ -194,12 +197,12 @@ def chap_add():
 def chap_add_p():
     name=request.form.get('Name')
     description=request.form.get('Description')
-    no_of_questions=request.form.get('n_of_ques')
     sub_id=request.form.get('s_id')
-    if not name or not description or not no_of_questions or not sub_id:
+    if not name or not description or not sub_id:
       flash("Enter all fields!")
+      return render_template('Admin_add/chp.html')
     subject = Subject.query.get(sub_id)
-    chapd=Chapter(name=name,description=description,no_of_questions=no_of_questions,sub_id=sub_id)
+    chapd=Chapter(name=name,description=description,sub_id=sub_id)
     db.session.add(chapd)
     db.session.commit()
     return redirect(url_for('admind'))
@@ -223,6 +226,7 @@ def chap_edit_p(id):
     sub_id=request.form.get('s_id')
     if not name or not description or not no_of_questions or not sub_id:
       flash("Enter all fields")
+      return render_template('Admin_add/Ch_edit.html',chapobj=chapobj)
     chapobj.name=name
     chapobj.description=description
     chapobj.no_of_questions=no_of_questions
@@ -279,13 +283,11 @@ def quizad():
 def quizadp():
   if request.method =='POST':
     ch_id=request.form.get('chapid')
-    date_of_quiz=request.form.get('d_of_quiz')
-    time_duration=request.form.get('t_dur')
     remarks=request.form.get('remarks')
-
-    if not ch_id or not date_of_quiz or not time_duration or not remarks:
+    if not ch_id  or not remarks:
       flash("Enter all fields" )
-    quizd=Quiz(ch_id=ch_id,date_of_quiz=datetime.strptime(date_of_quiz, '%Y-%m-%d'),time_duration=datetime.strptime(time_duration, "%H:%M").time(),remarks=remarks)
+      return render_template('Admin_add/quizadd.html')
+    quizd=Quiz(ch_id=ch_id,remarks=remarks)
     db.session.add(quizd)
     db.session.commit()
   return redirect(url_for('quize'))
@@ -304,15 +306,11 @@ def quiz_edit_p(id):
     if not quizobj:
       flash("Quiz doesn't exit")
     ch_id=request.form.get('chapid')
-    date_of_quiz=request.form.get('d_of_quiz')
-    time_duration=request.form.get('t_dur')
     remarks=request.form.get('remarks')
-
-    if not ch_id or not date_of_quiz or not time_duration or not remarks:
+    if not ch_id or not remarks:
       flash("Enter all fields" )
+      return render_template('Admin_add/Quiz_edit.html',quizobj=quizobj)
     quizobj.ch_id=ch_id
-    quizobj.date_of_quiz=datetime.strptime(date_of_quiz, '%Y-%m-%d')
-    quizobj.time_duration=datetime.strptime(time_duration, "%H:%M:%S").time()
     quizobj.remarks=remarks
     db.session.commit()
     return redirect(url_for('quize'))
@@ -359,6 +357,7 @@ def questadp():
     correct_answer=request.form.get('corr_ans')
     if not quiz_id or not question_statement or not option1 or not option2 or not option3 or not option4 or not correct_answer:
       flash("Enter all fields") 
+      return render_template('Admin_add/questadd.html')
     quesd=Question(quiz_id=quiz_id,question_statement=question_statement,option1=option1,option2=option2,option3=option3,option4=option4,correct_answer=correct_answer)
     db.session.add(quesd)
     db.session.commit()
@@ -376,7 +375,7 @@ def quest_edit(id):
 def quest_edit_p(id):
     questobj=Question.query.get(id)
     if not questobj:
-      return "Chapter doesn't exit"#Flash message is required here
+      flash("Chapter doesn't exit")#Flash message is required here
     quiz_id=request.form.get('q_id')
     question_statement=request.form.get('ques')
     option1=request.form.get('op1')
@@ -386,6 +385,7 @@ def quest_edit_p(id):
     correct_answer=request.form.get('corr_ans')
     if not quiz_id or not question_statement or not option1 or not option2 or not option3 or not option4 or not correct_answer:
       flash("Enter all fields")
+      return render_template('Admin_add/Qu_edit.html',questobj=questobj)
     questobj.quiz_id=quiz_id
     questobj.question_statement=question_statement
     questobj.option1=option1
@@ -421,19 +421,23 @@ def stu_scores():
   query = request.args.get('query') 
   search_type = request.args.get('search_type')
   quiz=None
+  invalid_input = False
   for score in user.uscores:
     quiz = Quiz.query.get(score.quiz_id)
     if query:
       try:
-        if (search_type == "qtime" and score.timestamp.date() == datetime.strptime(query, "%Y-%m-%d").date()) or (search_type == "score_value" and score.score == int(query)):
+        if (search_type == "qchap" and score.quiz.chapter.name == str(query)) or (search_type == "score_value" and score.score == int(query)):
           score_show.append((quiz,score))
       except:
-        flash("Invalid Input format!")
+        invalid_input = True
     else:
         score_show.append((quiz,score))
         
-  if query and not score_show :
-      flash("No such data found", "warning" )
+  if invalid_input:
+      flash("Invalid Input format!")
+
+  elif query and not score_show:
+      flash("No such data found", "warning")
   return render_template('User_add/scores.html',user=user,quiz=quiz,query=query,score_show=score_show,search_type=search_type)
 
 

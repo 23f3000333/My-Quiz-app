@@ -15,8 +15,8 @@ ChapterEdit
         <input type="text" class="form-control" id="name" name="Name" value="{{chapobj.name}}">
         </div>
         <div class="mb-3">
-            <label for="n_of_ques" class="form-label">No.of_Question</label>
-            <input type="number" class="form-control" id="n_of_ques" name="n_of_ques" value="{{chapobj.no_of_questions}}">
+            <label for="n_of_ques" class="form-label">No.of_Quiz</label>
+            <input type="number" class="form-control" id="n_of_ques" name="n_of_ques" value="{{chapobj.quizes|length}}">
         </div>
 
         <div class="mb-3">

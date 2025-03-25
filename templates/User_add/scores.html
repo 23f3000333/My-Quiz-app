@@ -28,7 +28,7 @@ Userdashboard
         <form action="" class="d-flex" role="search" method="GET">
           <select class="form-select me-2" name="search_type" id="search_type" required>
               <option value="">-- Select --</option>
-              <option value="qtime" {% if search_type == 'qtime' %}selected{% endif %}>Date</option>
+              <option value="qchap" {% if search_type == 'qchap' %}selected{% endif %}>Chapter</option>
               <option value="score_value" {% if search_type == 'score_value' %}selected{% endif %}>Score</option>
           </select>
           <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search" >
