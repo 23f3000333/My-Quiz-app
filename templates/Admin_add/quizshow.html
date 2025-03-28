@@ -25,15 +25,6 @@ QuizAdd
                 <label for="n_of_ques" class="form-label">No.of_Question</label>
                 <input type="number" class="form-control" id="n_of_ques" name="n_of_ques" value="{{quizobj.questions|length}}">
             </div>
-            <div class="mb-3">
-                <label for="d_of_quiz" class="form-label">Scheduled Date</label>
-                <input type="date" class="form-control" id="d_of_quiz" name="d_of_quiz" value="{{quizobj.date_of_quiz}}">
-            </div>
-
-            <div class="mb-3">
-                <label for="t_dur" class="form-label">Duration(hh:mm)</label>
-                <input type="time" class="form-control" id="t_dur" name="t_dur" value="{{ quizobj.time_duration}}">
-            </div>
             
             <div>
                 <a href="{{url_for('quize')}}" class="btn btn-primary"><h5>Close</h5></a>

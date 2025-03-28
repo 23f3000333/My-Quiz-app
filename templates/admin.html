@@ -123,14 +123,19 @@ Admindashboard
                     <td>{{ user.qualification }}</td>
                     <td>{{ user.date_of_birth }}</td>
                     <td>
-                        <ul>
-                            {% for score in user.uscores %}
-                                <li>
-                                    Quiz: {{ score.quiz.chapter.name }} (Subject: {{ score.quiz.chapter.subject.name }}),
-                                    Score: {{ score.score }}
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        {% if user.uscores %}
+                                <ul>
+                                    {% for score in user.uscores %}
+                                        <li>
+                                            Quiz: {{ score.quiz.chapter.name }} (Subject: {{ score.quiz.chapter.subject.name }}),
+                                            Score: {{ score.score }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                        {% else %}
+                            <p>User hasn't given any quiz.</p>
+                        {% endif %}
+
                     </td>
                 </tr>
             {% endfor %}

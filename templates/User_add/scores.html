@@ -41,10 +41,9 @@ Userdashboard
 {%block content%}
 <div class="i_container u_container">
   <table class="table table-bordered table-hover caption-top  align-middle w-100">
-    <caption class="text-center"><h1>Your Reality</h1></caption>
+    <caption class="text-center"><h1>Your Score</h1></caption>
     <thead>
       <tr class=" table-info">
-        <th>ID</th>
         <th>QUIZ_ID</th>
         <th>Quiz_Sub_Name</th>
         <th>Quiz_Ch_Name</th>
@@ -55,7 +54,6 @@ Userdashboard
     <tbody>
       {%for quiz,score in score_show%}
           <tr>
-            <td>{{score.id}}</td>
             <td>{{quiz.id}}</td>
             <td>{{quiz.chapter.subject.name}}</td>
             <td>{{quiz.chapter.name}}</td>

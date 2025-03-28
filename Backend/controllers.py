@@ -261,6 +261,7 @@ def quize():
     search_query = request.args.get('search_query', '').strip() 
     search_type = request.args.get('search_type', 'quizid')
     quizes = Quiz.query.all()
+    invalid_input = False 
     if search_query:
         if search_type == 'quizid':
             try:
@@ -268,10 +269,18 @@ def quize():
                 quizes = [quiz for quiz in quizes if quiz.id == quiz_id]
             except ValueError:
                 quizes = []
-                flash("Invalid Input Format!")
-        elif search_type == 'chapter_name':
-            quizes = [quiz for quiz in quizes if quiz.chapter and search_query.lower() in quiz.chapter.name.lower()]
+                invalid_input = True 
+                flash("Invalid Input Format!", "warning")
 
+        elif search_type == 'chapter_name':
+            if not search_query.isalpha():  
+                quizes = []
+                invalid_input = True  
+                flash("Invalid Input Format!", "warning")
+            else:
+                quizes = [quiz for quiz in quizes if quiz.chapter and search_query.lower() in quiz.chapter.name.lower()]
+    if search_query and not quizes and not invalid_input:
+        flash("No such data found", "warning")
     questions = Question.query.all()
     return render_template('Admin_add/quiz.html', quizes=quizes, questions=questions, chapters=chapters, search_query=search_query, search_type=search_type)
 

@@ -47,7 +47,7 @@ class Score(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('studentd.id'))
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
-    
+    timestamp=db.Column(db.DateTime,default=db.func.current_timestamp())
 
 
 
